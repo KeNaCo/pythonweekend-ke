@@ -1,0 +1,40 @@
+openapi: "3.0.3"
+info:
+  title: Payment providers
+  description: Payment providers for backup task on pythonweekend košice
+  version: "1.0"
+  x-visibility: unlisted
+servers:
+  - url: http://localhost:5000/{basePath}
+    description: Kiwi.com gladstone app
+    variables:
+      basePath:
+        default: ""
+paths:
+  /v1/charge:
+    post:
+      summary: Make payment in one single step.
+      requestBody:
+        required: true
+        content:
+          'application/json':
+            schema:
+              type: object
+              properties:
+                reference:
+                  description: Reference for client to track transaction.
+                  type: string
+                amount:
+                  type: string
+                currency:
+                  description: Currency code as defined in ISO-4217
+                  type: string
+                  minLength: 3
+                  maxLength: 3
+                  default: EUR
+              required:
+                - amount
+                - currency
+              example:
+                amount: 35
+                currency: SEK
