@@ -64,7 +64,6 @@ def v3_authorize_payment():
         return jsonify({'status': 400, 'error': 3}), 200
     if len(payment['currency']) != 3:
         return jsonify({'status': 400, 'error': 4}), 200
-
     return jsonify({'status': 200, 'payment_id': uuid4()}), 200
 
 
@@ -78,8 +77,17 @@ def v3_capture_payment(payment_id):
     return jsonify({'status': 200}), 200
 
 
+system_bp = Blueprint('system_bp', __name__)
+
+
+@system_bp.route('/ping')
+def ping():
+    return '', 200
+
+
 def make_app():
     app = Flask(__name__)
+    app.register_blueprint(system_bp)
     app.register_blueprint(provider1_bp)
     app.register_blueprint(provider2_bp)
     app.register_blueprint(provider3_bp)
