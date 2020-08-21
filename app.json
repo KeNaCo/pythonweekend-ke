@@ -1,0 +1,7 @@
+
+{
+  "name": "pythonweekend-ke",
+  "description": "Backend for python-weekend ke",
+  "repository": "https://github.com/KeNaCo/pythonweekend-ke",
+  "keywords": ["flask", "heroku"]
+}
