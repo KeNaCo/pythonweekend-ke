@@ -1,6 +1,8 @@
+from random import randint
+from time import sleep
 from uuid import uuid4, UUID
 
-from flask import Blueprint, Flask, request, jsonify
+from flask import Blueprint, Flask, request, jsonify, current_app
 
 provider1_bp = Blueprint('provider1_bp', __name__, url_prefix='/v1')
 
@@ -53,6 +55,9 @@ provider3_bp = Blueprint('provider3_bp', __name__, url_prefix='/v3')
 
 @provider3_bp.route('/authorize', methods=['POST'])
 def v3_authorize_payment():
+    # slowing down request
+    sleep(randint(*current_app.config['SLOW_PROVIDER_RESPONSES']))
+
     payment = request.json
     if 'amount' not in payment:
         return jsonify({'status': 400, 'error': 1}), 200
@@ -69,6 +74,9 @@ def v3_authorize_payment():
 
 @provider3_bp.route('/capture/<payment_id>', methods=['POST'])
 def v3_capture_payment(payment_id):
+    # slowing down request
+    sleep(randint(*current_app.config['SLOW_PROVIDER_RESPONSES']))
+
     try:
         UUID(payment_id)
     except ValueError:
@@ -87,6 +95,8 @@ def ping():
 
 def make_app():
     app = Flask(__name__)
+    app.config.from_pyfile('app.cfg')  # default
+    app.config.from_envvar('APP_CONFIG', silent=True)  # override
     app.register_blueprint(system_bp)
     app.register_blueprint(provider1_bp)
     app.register_blueprint(provider2_bp)

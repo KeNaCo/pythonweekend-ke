@@ -7,6 +7,7 @@ from app import make_app
 @pytest.fixture
 def client():
     app = make_app()
+    app.config['SLOW_PROVIDER_RESPONSES'] = 0, 0
     client = app.test_client()
     return client
 
