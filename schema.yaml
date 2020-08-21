@@ -38,3 +38,141 @@ paths:
               example:
                 amount: 35
                 currency: SEK
+      responses:
+        '200':
+          description: Payment successful
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  transaction_id:
+                    type: string
+                    format: UUID
+                  required:
+                    - transaction_id
+      tags:
+        - Provider-1
+  /v2/authorize:
+    post:
+      summary: Authorize payment. Money are blocked on user account but not transfered.
+      requestBody:
+        required: true
+        content:
+          'application/json':
+            schema:
+              type: object
+              properties:
+                merchant:
+                  description: Merchant name
+                  type: string
+                amount_of_money:
+                  description: Amount of money you want to pay in cents(or other currency equivalent)
+                  type: object
+                  properties:
+                    amount:
+                      type: integer
+                    currency:
+                      type: string
+                  required:
+                    - amount
+                    - currency
+              required:
+                - merchant
+                - amount_of_money
+      responses:
+        '200':
+          description: Payment authorized.
+          content:
+            'application/json':
+              schema:
+                type: object
+                propreties:
+                  payment_reference:
+                    type: string
+                    format: UUID
+                  required:
+                    - payment_reference
+      tags:
+        - Provider-2
+  /v2/capture:
+    post:
+      summary: Charge authorized payment. Notify a Bank that it can transfer money.
+      requestBody:
+        required: true
+        content:
+          'application/json':
+            schema:
+              type: object
+              properties:
+                payment_reference:
+                  type: string
+                  format: UUID
+                required:
+                  - payment_reference
+      responses:
+        '200':
+          description: Payment charged.
+      tags:
+        - Provider-2
+  /v3/authorize:
+    post:
+      summary: Authorize payment. Money are blocked on user account but not transfered.
+      requestBody:
+        required: true
+        content:
+          'application/json':
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: string
+                currency:
+                  description: Currency code as defined in ISO-4217
+                  type: string
+              required:
+                - amount
+                - currency
+      responses:
+        '200':
+          description: Payment authorized.
+          content:
+            'application/json':
+              schema:
+                type: object
+                propreties:
+                  status:
+                    description: Status of payment operation
+                    type: integer
+                  payment_id:
+                    type: string
+                    format: UUID
+                  required:
+                    - status
+      tags:
+        - Provider-3
+  /v3/capture/{payment_id}:
+    post:
+      summary: Charge authorized payment. Notify a Bank that it can transfer money.
+      parameters:
+        - name: payment_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: UUID
+      responses:
+        '200':
+          description: Payment charged.
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  status:
+                    description: Status of payment operation
+                    type: integer
+                required:
+                  - status
+      tags:
+        - Provider-3
