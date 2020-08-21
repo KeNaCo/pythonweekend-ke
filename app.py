@@ -90,15 +90,13 @@ system_bp = Blueprint('system_bp', __name__)
 
 @system_bp.route('/ping')
 def ping():
-    return '', 200
+    return 'pong', 200
 
 
-def make_app():
-    app = Flask(__name__)
-    app.config.from_pyfile('app.cfg')  # default
-    app.config.from_envvar('APP_CONFIG', silent=True)  # override
-    app.register_blueprint(system_bp)
-    app.register_blueprint(provider1_bp)
-    app.register_blueprint(provider2_bp)
-    app.register_blueprint(provider3_bp)
-    return app
+app = Flask(__name__)
+app.config.from_pyfile('app.cfg')  # default
+app.config.from_envvar('APP_CONFIG', silent=True)  # override
+app.register_blueprint(system_bp)
+app.register_blueprint(provider1_bp)
+app.register_blueprint(provider2_bp)
+app.register_blueprint(provider3_bp)
